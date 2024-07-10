@@ -1,0 +1,106 @@
+---
+title: "Examen programacion en R"
+author: "Mirian Astete Rojas"
+output: html_document
+---
+
+## Filtrado de datos en relacion a estudiantes y sus notas de cada asignatura
+
+### Se llama a las respectivas librerias
+```{r cars}
+library(readxl)
+library(tidyverse)
+library(dplyr)
+
+```
+
+
+### Se llama al archivo
+```{r}
+
+notas_2023<- read_excel(path = "~/Desktop/calificaciones_asiganturas_2023.xlsx",
+                        sheet = 1)
+names(notas_2023)
+```
+
+
+### Hoja numero 1 del archivo excel
+```{r}
+n1 <- notas_2023
+str(n1)
+```
+
+
+### Seleccionar las variables a analizar y visualizacion mediante la funcion names
+```{r}
+n1 <-n1[ , c(3,10,12,14,17)]
+names(n1)
+```
+
+
+### Filtrado por codigo curso
+```{r}
+primero <- n1 %>% 
+  filter ( n1$`Cod Grado` == 1)
+print(primero)
+```
+
+
+## Ordenar datos de nivel educativo y asignaturas por columnas
+```{r}
+C1<- primero %>%
+  pivot_wider(names_from = `Desc Subsector`, 
+              values_from = Calificación)
+print(C1)
+```
+
+
+## Filtrado de datos por letra curso "primero medio A"
+```{r}
+C1A <- C1 %>% 
+  filter ( C1$`Letra Curso` == "A")
+print(C1A)
+```
+
+
+## Diagrama de caja para las 5 asignaturas troncales
+```{r}
+par(mfrow=c(1,1))
+boxplot(C1A$`IDIOMA EXTRANJERO: INGLÉS`,
+        C1A$`CIENCIAS NATURALES`, 
+        C1A$`HISTORIA, GEOGRAFÍA Y CIENCIAS SOCIALES`,
+        C1A$MATEMÁTICA,
+        C1A$`LENGUA Y LITERATURA`,
+        main = "Asignaturas 1ero A")
+```
+
+
+## Histograma para las 5 asignaturas troncales
+```{r}
+par(mfrow=c(2,3))
+hist(C1A$`CIENCIAS NATURALES`, main = "Ciencias")
+hist(C1A$`IDIOMA EXTRANJERO: INGLÉS`, main = "Ingles")
+hist(C1A$`HISTORIA, GEOGRAFÍA Y CIENCIAS SOCIALES`, main = "Historia")
+hist(C1A$MATEMÁTICA, main = "Matemática")
+hist(C1A$`LENGUA Y LITERATURA`, main = "Lenguaje")
+```
+
+## Curvas de densidad 
+```{r}
+par(mfrow=c(2,3))
+plot(density(C1A$`IDIOMA EXTRANJERO: INGLÉS`) , main = "Ingles")
+plot(density(C1A$`CIENCIAS NATURALES`), main = "Ciencias")
+plot(density(C1A$`HISTORIA, GEOGRAFÍA Y CIENCIAS SOCIALES`), main = "Educación ciudadana")
+plot(density(C1A$MATEMÁTICA), main = "Matemática")
+plot(density(C1A$`LENGUA Y LITERATURA`), main = "Lenguaje")
+```
+
+
+
+
+
+
+
+
+
+
